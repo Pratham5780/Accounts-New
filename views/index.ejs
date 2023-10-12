@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .credit.active,
+        .debit.active {
+            border-width: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="left">
+            <img src="https://digigrowhub.in/wp-content/uploads/2021/10/digi-new.png" alt="">
+            <h2>Account </h2>
+        </div>
+        <div class="right">
+            <button onclick="downloadTableAsCSV()">Download as CSV</button>
+        </div>
+
+    </div>
+    <div id="buttons">
+        <button class='credit' onclick="showCreditForm()">Credit (In)</button>
+        <button class='debit' onclick="showDebitForm()">Debit (Out)</button>
+    </div>
+    <form id="transaction-form" style="display: none" action="/transaction" method="POST">
+        <input type="date" name="custom" placeholder="Date" required>
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="reason" placeholder="Reason" required>
+        <input type="number" name="amount" placeholder="Amount" required>
+        <input type="hidden" name="type" id="transaction-type" value="credit">
+        <button type="submit">Submit</button>
+    </form>
+    <table>
+        <tr>
+            <th>Sr no</th>
+            <th>Date with time</th>
+            <th>Original Date</th>
+            <th>Name</th>
+            <th>Reason</th>
+            <th>Credit</th>
+            <th>Debit</th>
+            <th>Balance</th>
+            <th>Delete</th>
+        </tr>
+        <% let balance=0; %>
+            <% transactions.forEach((transaction, index)=> { %>
+                <tr>
+                    <td>
+                        <%= index + 1 %>
+                    </td>
+                    <td>
+                        <%= transaction.date.toLocaleString() %>
+                    </td>
+                    <td>
+                        <%= transaction.custom %>
+                    </td>
+                    <td>
+                        <%= transaction.name %>
+                    </td>
+                    <td>
+                        <%= transaction.reason %>
+                    </td>
+                    <% if (transaction.type==='credit' ) { %>
+                        <td class="credit">
+                            <%= transaction.amount %>
+                        </td>
+                        <td></td>
+                        <% } else { %>
+                            <td></td>
+                            <td class="debit">
+                                <%= transaction.amount %>
+                            </td>
+                            <% } %>
+                                <% balance +=(transaction.type==='credit' ? transaction.amount : -transaction.amount);
+                                    %>
+                                    <td>
+                                        <%= balance %>
+                                    </td>
+                                    <td>
+                                        <button class="delete-button"
+                                            onclick="deleteTransaction('<%= transaction._id %>')"><i
+                                                class="fa-solid fa-delete-left" style="color:red"></i></button>
+                                    </td>
+                </tr>
+                <% }); %>
+    </table>
+    <div id="main-balance">
+        <p style="color: <%= balance < 0 ? 'red' : 'green' %>;">Main Balance: <%= balance %>
+        </p>
+
+    </div>
+    <script>
+        function calculateBalance(transactions) {
+            let balance = 0;
+            transactions.forEach((transaction) => {
+                if (transaction.type === 'credit') {
+                    balance += transaction.amount;
+                } else {
+                    balance -= transaction.amount;
+                }
+            });
+            return balance;
+        }
+
+        function deleteTransaction(transactionId) {
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                fetch(`/transaction/delete/${transactionId}`, {
+                    method: 'POST',
+                })
+                    .then((response) => {
+                        if (response.status === 200) {
+                            location.reload(); // Refresh the page after successful deletion
+                        } else {
+                            alert('Error deleting transaction');
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Error deleting transaction');
+                    });
+            }
+        }
+
+
+        function showCreditForm() {
+            document.getElementById('transaction-form').style.display = 'block';
+            document.getElementById('transaction-type').value = 'credit';
+
+            // Add 'active' class to the credit button and remove it from the debit button
+            document.querySelector('.credit').classList.add('active');
+            document.querySelector('.debit').classList.remove('active');
+        }
+
+        function showDebitForm() {
+            document.getElementById('transaction-form').style.display = 'block';
+            document.getElementById('transaction-type').value = 'debit';
+
+            // Add 'active' class to the debit button and remove it from the credit button
+            document.querySelector('.debit').classList.add('active');
+            document.querySelector('.credit').classList.remove('active');
+        }
+        function downloadTableAsCSV() {
+            // Get the table element
+            const table = document.querySelector('table');
+
+            // Create an array to hold the CSV data
+            const csvData = [];
+
+            // Get the table headers
+            const headers = ["Sr no", "Date", "Time", "Original Date", "Name", "Reason", "Credit", "Debit", "Balance"];
+            table.querySelectorAll('thead th').forEach((th) => {
+                headers.push(th.textContent.trim());
+            });
+            csvData.push(headers.join(','));
+
+            // Get the table rows and extract data
+            table.querySelectorAll('tbody tr').forEach((row) => {
+                const rowData = [];
+                row.querySelectorAll('td').forEach((cell) => {
+                    rowData.push(cell.textContent.trim());
+                });
+                csvData.push(rowData.join(','));
+            });
+
+            // Combine the rows into a CSV string
+            const csvString = csvData.join('\n');
+
+            // Create a blob from the CSV string
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+            // Create a download link
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'table.csv';
+
+            // Trigger a click event on the download link to start the download
+            a.click();
+        }
+
+    </script>
+    <script src="https://kit.fontawesome.com/a8cf255646.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

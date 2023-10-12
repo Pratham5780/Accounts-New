@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;1,200;1,300;1,400&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Titillium Web', sans-serif;
+    --primary-color: #E9F1FA;
+    --secondary-color: #00ABE4;
+    --side-color: white;
+}
+body{
+    background-color: var(--primary-color)
+}
+.navbar{
+    display: flex;
+    width: auto;
+    align-items: center;
+    padding: 0 20px;
+    margin-bottom: 10px;
+    gap: 50px;
+    background-color: var(--secondary-color);
+    color: var(--side-color);
+    font-size: 30px;
+    justify-content: space-between;
+}
+.left{
+  display: flex;
+  gap: 20px;
+}
+.navbar>.left>img{
+    width: 150px;
+}
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  #buttons {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 0 10px;
+    cursor: pointer;
+  }
+  
+  #transaction-form {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  input[type="text"],
+  input[type="number"] {
+    padding: 10px;
+    font-size: 16px;
+    margin: 5px;
+    width: 200px;
+  }
+  
+  .credit {
+    color: green;
+    font-weight: 600;
+  }
+  
+  .debit {
+    color: red;
+    font-weight: 600;
+  }
+  
+  #main-balance {
+    text-align: right;
+    margin-top: 20px;
+    font-size: 18px;
+  }
+#main-balance{
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+button{
+  background-color: var(--side-color);
+  border: 2px solid var(--secondary-color);
+  border-radius: 20px;
+}
+.credit{
+  color: green;
+}
+.debit{
+  color: red;
+}
+.active{
+  border: 3px solid black;
+
+}
+table{
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+td,th {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2;}
+
+tr:hover {background-color: #ddd;
+font-weight: 600;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: var(--secondary-color);
+  color: white;
+}
+.delete-button{
+  padding: 4px 10px;
+  border-radius: 5px;
+  border: 1px solid red;
+}
+.login-container{
+  display: flex;
+  justify-content:center;
+  margin: 40px;
+}
+.login-container>form{
+  border: 2px solid var(--secondary-color);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+}
+.login-container>form>input{
+  padding: 10px 5px;
+  width: 250px;
+  background-color: white;
+  border: 1px solid var(--secondary-color);
+  border-radius: 10px;
+  outline: none;
+}
